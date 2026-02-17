@@ -1,0 +1,54 @@
+# .coderabbit.yaml
+version: 1
+
+reviews:
+  # Keep reviews focused and actionable
+  high_level_summary: true
+  review_status: true
+
+  # OPA/Policy repos usually benefit from catching subtle logic issues
+  request_changes_workflow: false
+  auto_review:
+    enabled: true
+    # Review PRs automatically
+    on_pull_request: true
+
+  # Reduce noise on generated/vendor content
+  path_filters:
+    exclude:
+      - "**/vendor/**"
+      - "**/.terraform/**"
+      - "**/dist/**"
+      - "**/build/**"
+      - "**/node_modules/**"
+      - "**/*.lock"
+      - "**/*.min.*"
+      - "**/coverage/**"
+
+  # Tell CodeRabbit what to pay attention to
+  instructions: |
+    You are reviewing an Open Policy Agent (OPA) repository that primarily contains Rego policies.
+    Priorities:
+    - Correctness of policy logic and edge cases (deny/allow defaults, missing fields, null handling).
+    - Security impact: avoid overly-broad allow rules and ensure deny rules are explicit and testable.
+    - Rego best practices: use future keywords when appropriate, avoid deprecated syntax, keep rules small.
+    - Readability: clear rule names, comments for non-obvious logic, consistent formatting.
+    - Tests: require/encourage rego tests for policy changes; ensure tests cover both allow and deny.
+    - Input schema assumptions: call out any assumptions about input shape and suggest validation.
+    - Performance: avoid expensive comprehensions/iteration where possible; flag potential O(n^2) patterns.
+    When suggesting code changes, provide concrete Rego snippets.
+    If there are no issues, explicitly say so.
+
+  # Optional: focus files that matter most in OPA repos
+  file_patterns:
+    include:
+      - "**/*.rego"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/*.json"
+      - "**/*.md"
+
+comments:
+  # Avoid spamming: consolidate where possible
+  max_comments: 15
+  severity_threshold: medium
