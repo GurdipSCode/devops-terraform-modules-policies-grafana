@@ -1,1 +1,35 @@
+# Terraform plan artifacts
+*.tfplan
+*.tfstate
+*.tfstate.backup
+tfplan.json
+plan.json
 
+# OPA bundles
+*.tar.gz
+bundle/
+
+# OPA decision logs
+decisions.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Regal (OPA linter) cache
+.regal/
+
+# Coverage output
+coverage/
+*.json.coverage
+
+# hcl2json output
+*.hcl.json
