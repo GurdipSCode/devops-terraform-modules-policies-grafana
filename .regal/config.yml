@@ -1,1 +1,182 @@
+# .regal/config.yaml
+# Regal linter configuration for Grafana Terraform OPA policies
+# Docs: https://docs.styra.com/regal/configuration
 
+project:
+  roots:
+    - policies
+    - tests
+
+capabilities:
+  from:
+    engine: opa
+
+# Global ignores
+ignore:
+  files:
+    - "*_tmp.rego"
+
+rules:
+  # ── Style ──────────────────────────────────────────────────
+  style:
+    # Enforce opa fmt compliance
+    opa-fmt:
+      level: error
+
+    # Line length
+    line-length:
+      level: warning
+      max-line-length: 120
+      # sprintf messages can get long
+      ignore:
+        files:
+          - "*_test.rego"
+
+    # Prefer snake_case for rule names
+    prefer-snake-case:
+      level: error
+
+    # No whitespace in rule names
+    no-whitespace-comment:
+      level: warning
+
+    # TODO/FIXME comments are fine during development
+    todo-comment:
+      level: ignore
+
+    # Avoid yoda conditions like `true == x`
+    yoda-condition:
+      level: error
+
+    # Detects use of `default` with a non-boolean/non-string value
+    default-over-else:
+      level: warning
+
+    # Prefer `some x in collection` over `collection[x]`
+    use-in-operator:
+      level: warning
+
+    # Avoid unnecessary `else` blocks
+    unnecessary-some:
+      level: warning
+
+    # Prefer sets over arrays for membership checks
+    use-some-for-output-vars:
+      level: warning
+
+    # Consistent arg ordering
+    external-reference:
+      level: warning
+
+  # ── Bugs ───────────────────────────────────────────────────
+  bugs:
+    # Catch duplicate imports
+    duplicate-rule:
+      level: error
+
+    # Catch rules that always evaluate to the same value
+    constant-condition:
+      level: error
+
+    # Catch invalid metadata annotations
+    invalid-metadata-attribute:
+      level: error
+
+    # Detect unused return values
+    unused-return-value:
+      level: warning
+
+    # Detect top-level iteration in rule body
+    top-level-iteration:
+      level: warning
+
+    # Catch `if` in rule body without `contains`
+    if-empty-object:
+      level: error
+
+    # Detect impossible `not` conditions
+    impossible-not:
+      level: error
+
+  # ── Imports ────────────────────────────────────────────────
+  imports:
+    # Avoid importing `input` — it's already available
+    redundant-data-import:
+      level: warning
+
+    # Prefer explicit imports
+    implicit-future-keywords:
+      level: error
+
+    # Avoid unused imports
+    unresolved-import:
+      level: error
+
+    # Prefer `import rego.v1`
+    use-rego-v1:
+      level: error
+
+  # ── Idiomatic ──────────────────────────────────────────────
+  idiomatic:
+    # Use `contains` and `if` keywords
+    use-contains:
+      level: error
+
+    use-if:
+      level: error
+
+    # Use assignment operator `:=` instead of `=` for local vars
+    use-assignment-operator:
+      level: error
+
+    # Prefer `some .. in` over iteration
+    prefer-some-in-iteration:
+      level: warning
+
+    # Avoid boolean comparison `== true`
+    boolean-assignment:
+      level: warning
+
+    # Avoid equals pattern `x = true` in rule head
+    equals-pattern:
+      level: warning
+
+  # ── Testing ────────────────────────────────────────────────
+  testing:
+    # Test names should start with test_
+    test-outside-test-package:
+      level: error
+
+    # Detect identically named tests
+    identically-named-tests:
+      level: error
+
+    # Tests without assertions
+    todo-test:
+      level: warning
+
+    # Print statements left in test code
+    print-or-trace-call:
+      level: warning
+      ignore:
+        files:
+          - "*_test.rego"
+
+  # ── Performance ────────────────────────────────────────────
+  performance:
+    # Avoid `with` in tight loops
+    with-outside-test-context:
+      level: ignore
+
+  # ── Custom ─────────────────────────────────────────────────
+  custom:
+    # Enforce package naming convention for this repo
+    naming-convention:
+      level: error
+      conventions:
+        - pattern: '^terraform\.grafana\.[a-z_]+$'
+          targets:
+            - package
+          except:
+            files:
+              - "*_test.rego"
