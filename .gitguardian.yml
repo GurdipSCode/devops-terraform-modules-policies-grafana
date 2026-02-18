@@ -1,1 +1,30 @@
+# .gitguardian.yml
+# GitGuardian configuration for OPA policy repository
 
+version: 2
+
+secret:
+  # Scan all files by default
+  show-secrets: false
+
+  # Paths to ignore (no secrets expected here)
+  ignored-paths:
+    - "**/*_test.rego"
+    - "**/tests/**"
+    - "**/*.md"
+    - "**/CHANGELOG.md"
+    - "**/.gitignore"
+    - "**/cliff.toml"
+    - "**/lefthook.yml"
+
+  # Matches to ignore (common OPA false positives)
+  ignored-matches:
+    # Example policy data that looks like tokens
+    - name: opa-mock-data
+      match: "mock_*"
+    # Rego string interpolation patterns
+    - name: rego-sprintf
+      match: "sprintf\\("
+
+  # Detectors to ignore if causing false positives
+  # ignored-detectors: []
