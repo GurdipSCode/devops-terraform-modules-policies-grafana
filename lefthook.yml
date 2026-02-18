@@ -1,1 +1,27 @@
+# lefthook.yml
+# Git hooks for OPA policy repository
 
+pre-commit:
+  parallel: true
+  commands:
+    rego-check:
+      glob: "*.rego"
+      run: opa check policies/
+
+    rego-fmt:
+      glob: "*.rego"
+      run: opa fmt --diff --fail policies/
+
+    rego-lint:
+      glob: "*.rego"
+      run: regal lint policies/
+
+pre-push:
+  commands:
+    opa-test:
+      run: opa test policies/ tests/ -v
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: powershell -Command "if ((Get-Content {1}) -notmatch '^(feat|fix|chore|docs|refactor|test|ci)(\(.+\))?: .+') { Write-Error 'Commit message must follow Conventional Commits, e.g. feat(dashboard): add folder enforcement policy'; exit 1 }"
